@@ -6,11 +6,11 @@ if __name__ == '__main__':
 
     track = 0
     channel = 0
-    time = 0            # in beats
-    duration = 4        # in beats
-    tempo = 120          # BPM
-    volume = 100        # 0 - 127 (MIDI standard)
-    volumeLowLim = 75 # low limit for volume
+    time = 0                # in beats
+    duration = 4            # in beats
+    tempo = 120             # BPM
+    volume = 100            # 0 - 127 (MIDI standard)
+    volumeLowLim = 75       # low limit for volume
 
     # create a 1 track midi file
     # one track, defaults to format 1 (tempo track is created automatically)
@@ -31,6 +31,7 @@ if __name__ == '__main__':
             pitch = int(pixel[0]//2) if int(pixel[0]) > 127 else int(pixel[0])
             if len(pixel) > 1:
                 volume = volumeLowLim if int(pixel[2]) > volumeLowLim else int(pixel[2])
+                ###TODO: figure out duration
                 # duration = (pixel[1] % 3) + 1
             midiFile.addNote(track, channel, pitch, time+idx+jIdx+duration, duration, volume)
 
