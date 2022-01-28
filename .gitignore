@@ -1,0 +1,11 @@
+# images
+*.png
+*.jpg
+*.jpeg
+*.bmp
+
+# MIDI files
+*.mid
+
+# .pyc files
+*.pyc
