@@ -3,7 +3,11 @@ from midiutil import MIDIFile
 
 class MIDI():
     def __init__(self, duration, tempo, volume, volumeLowLim, numTracks, fileName, imageData):
-        self.track = numTracks
+        # longa = 4, double whole note = 2, whole note = 1, half = 1/2, quarter = 1/4
+        # eighth = 1/8, sixteenth = 1/16, thirty-second = 1/32, sixty-fourth = 1/64
+        # hundred twenty-eighth = 1/128
+        self.noteDurations = [4, 2, 1, 0.5, 0.25, 0.125, 0.0625, 0.03125, 0.015625, 0.0078125]
+        self.track = [x for x in range(numTracks)]
         self.channel = 0
         self.time = 0
         self.duration = duration
@@ -28,25 +32,16 @@ class MIDI():
                     (R,G,B)
                     0-255 values
                     MIDI notes are from 0-127
+
                     structure:
-                    R - pitch (R/2) if greater than 127 else R val
-                    G - duration
-                    B - volume 100 if greater than 100, else B val
+                    pitch = (pixel[i]/2) if greater than 127 else pixel[i] val
+                    duration = pixel[i] % 10 (length of self.noteDurations)
+                    volume = 100 if greater than 100, else pixel[i] val
                 """
-                self.time = idx+jIdx+self.duration
-                
-                # R track
-                volumeR = self.volumeLowLim if int(pixel[0]) > self.volumeLowLim else int(pixel[0])
-                pitchR = int(pixel[0]//2) if int(pixel[0]) > 127 else int(pixel[0])
-                self.midiFile.addNote(0, self.channel, pitchR, self.time, self.duration, volumeR)
+                for i in self.track:
+                    self.duration = self.noteDurations[pixel[i] % len(self.noteDurations)]
+                    vol = self.volumeLowLim if int(pixel[i]) > self.volumeLowLim else int(pixel[i])
+                    pitch = int(pixel[i]//2) if int(pixel[i]) > 127 else int(pixel[i])
 
-                if self.track > 1:
-                    # G track
-                    volumeG = self.volumeLowLim if int(pixel[1]) > self.volumeLowLim else int(pixel[1])
-                    pitchG = int(pixel[1]//2) if int(pixel[1]) > 127 else int(pixel[1])
-                    self.midiFile.addNote(1, self.channel, pitchG, self.time, self.duration, volumeG)
-
-                    # B track
-                    volumeB = self.volumeLowLim if int(pixel[2]) > self.volumeLowLim else int(pixel[2])
-                    pitchB = int(pixel[2]//2) if int(pixel[2]) > 127 else int(pixel[2])
-                    self.midiFile.addNote(2, self.channel, pitchB, self.time, self.duration, self.volume)
+                    # self.midiFile.addTempo(i, self.time, self.tempo)
+                    self.midiFile.addNote(i, self.channel, pitch, self.time, float(self.duration), vol)
