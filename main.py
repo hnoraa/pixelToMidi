@@ -23,3 +23,4 @@ if __name__ == '__main__':
     else:
         print("creating MIDI")
         ptm.createMIDI()
+        ptm.midi.listTracks()

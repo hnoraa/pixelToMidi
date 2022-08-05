@@ -9,8 +9,10 @@ class PixelToMidi():
         self.midi = MIDI(4, 120, 100, 75, 3, self.outputFile, self.imageData)
 
     def createMIDI(self):
+        self.midi.createTracks(30)
+        
         self.midi.addTempo()
 
-        self.midi.createTracks()
+        self.midi.populate()
 
         self.midi.writeMidi()
