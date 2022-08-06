@@ -4,6 +4,7 @@
 from tkinter import Tk
 from ui import Window
 from pixelToMidi import PixelToMidi
+from song import Song
 
 graphical = False
 

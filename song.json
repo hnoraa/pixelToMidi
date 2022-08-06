@@ -1,12 +1,12 @@
 {
     "title": "test song",
-    "tracks": [
-        {"id": 0, "channel": 1, "progam": 16, "name": "lead"},
-        {"id": 1, "channel": 2, "progam": 22, "name": "rhythm"},
-        {"id": 2, "channel": 3, "progam": 50, "name": "bass"}
-    ],
     "fileName":"song1.midi",
+    "imageName": "test.png",
     "duration": 4,
     "tempo": 120,
-    "image": "test.png"
+    "tracks": [
+        {"id": 0, "channel": 1, "program": 16, "name": "lead"},
+        {"id": 1, "channel": 2, "program": 22, "name": "rhythm"},
+        {"id": 2, "channel": 3, "program": 50, "name": "bass"}
+    ]
 }
