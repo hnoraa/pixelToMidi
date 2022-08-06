@@ -1,14 +1,6 @@
+# midiutil docs: https://readthedocs.org/projects/midiutil/downloads/pdf/latest/
 from midiutil import MIDIFile
-
-class Track():
-    """
-    Represents a MIDI track (singular)
-    """
-    def __init__(self, trackIdx, channel, program):
-        self.trackIdx = trackIdx
-        self.channel = channel
-        self.program = program
-
+from track import Track
 
 class MIDI():
     """
@@ -38,7 +30,7 @@ class MIDI():
 
     def createTracks(self, program):
         for i in range(self.numTracks):
-            self.tracks.append(Track(i, i, program))
+            self.tracks.append(Track(i, i, program, ""))
 
     def listTracks(self):
         for i in range(len(self.tracks)):
