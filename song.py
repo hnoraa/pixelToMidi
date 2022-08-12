@@ -4,38 +4,10 @@ import json
 
 
 class Song():
-    """
-    Default constructor
-    """
-    def __init__(self):
-        self.date = datetime.datetime.now()
-        self.title = ""
-        self.fileName = ""
-        self.imageName = ""
-        self.duration = 4
-        self.tempo = 120
-        self.tracks = []
-
-    """
-    Command line constructor
-    """
     def __init__(self, configFile):
-        self.__init__()
+        self.date = datetime.datetime.now()
         self.configFile = configFile
         self.__loadConfig()
-
-    """
-    UI constructor
-    """
-    def __init__(self, title, fileName, imageName, duration, tempo, tracks):
-        self.__init__()
-        self.title = title
-        self.fileName = fileName
-        self.imageName = imageName
-        self.duration = duration
-        self.tempo = tempo
-        for t in tracks:
-            self.tracks.append(t)
 
     def __loadConfig(self):
         with open(self.configFile) as cfg:
@@ -45,7 +17,8 @@ class Song():
             self.imageName = d['imageName']
             self.duration = d['duration']
             self.tempo = d['tempo']
-
+            self.tracks = []
+            
             for i in range(len(d['tracks'])):
                 self.tracks.append(Track(
                     d['tracks'][i]['id'],

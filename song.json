@@ -1,7 +1,7 @@
 {
     "title": "test song",
     "fileName":"song1.midi",
-    "imageName": "test.png",
+    "imageName": "images/tester.png",
     "duration": 4,
     "tempo": 120,
     "tracks": [

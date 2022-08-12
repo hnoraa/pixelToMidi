@@ -15,13 +15,10 @@ def main():
     root.mainloop()
 
 if __name__ == '__main__':
-    image = 'images/tester.png'
-    midiPath = 'out.midi'
-    ptm = PixelToMidi(image, midiPath)
+    ptm = PixelToMidi('song.json')
 
     if graphical:
         main()
     else:
         print("creating MIDI")
-        ptm.createMIDI()
-        ptm.midi.listTracks()
+        ptm.pToM()
