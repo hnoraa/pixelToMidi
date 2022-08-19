@@ -10,9 +10,13 @@ class Window(Tk):
         self.geometry('600x600')
         self.statusLblTxt = StringVar()
 
+        self.duration = 0
+        self.tempo = 40
+
         self.__statusBar()
         self.__menu()
         self.__tabs()
+        self.__songTab()
 
         self.config(menu=self.mainMenu)
 
@@ -48,6 +52,18 @@ class Window(Tk):
         self.tabControl.add(self.tabTracks, text='Tracks')
         self.tabControl.add(self.tabImage, text='Image')
         self.tabControl.pack(expand=1, fill='both')
+
+    def __songTab(self):
+        self.songTitleLbl = Label(self.tabSong, text='Title:').grid(column=0, row=0, sticky='e', padx=3, pady=3)
+        self.songTitleTxt = Entry(self.tabSong).grid(column=1, row=0, sticky='w', padx=3, pady=3)
+
+        self.songDurLbl = Label(self.tabSong, text='Duration:').grid(column=0,row=1, sticky='e', padx=3, pady=3)
+        self.songDurScl = Scale(self.tabSong, from_=0, to=100, orient=HORIZONTAL, variable=self.duration).grid(column=1, row=1, sticky='w', padx=3, pady=3)
+        self.songDurCount = Label(self.tabSong, textvariable=self.duration).grid(column=2,row=1, padx=3, pady=3)
+
+        self.songTempoLbl = Label(self.tabSong, text='Tempo:').grid(column=0,row=2, sticky='e', padx=3, pady=3)
+        self.songTempoScl = Scale(self.tabSong, from_=40, to=208, orient=HORIZONTAL, variable=self.tempo).grid(column=1, row=2, sticky='w', padx=3, pady=3)
+        self.songTempoCount = Label(self.tabSong, textvariable=self.tempo).grid(column=2,row=2, padx=3, pady=3)
 
     def __menuNew(self):
         self.statusLblTxt.set('New menu selected')
