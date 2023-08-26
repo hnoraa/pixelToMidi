@@ -2,6 +2,7 @@
 #### Install Pillow
 [https://pillow.readthedocs.io/en/latest/installation.html]
 ```python -m pip install --upgrade pip```
+
 ```python -m pip install --upgrade Pillow```
 
 #### Create virtual enviroment
@@ -14,4 +15,5 @@
 
 #### Install requirements
 ```pip install --upgrade pip```
+
 ```pip install -r requirements.txt```

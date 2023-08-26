@@ -2,26 +2,32 @@ from PIL import Image
 from numpy import asarray
 from midiutil import MIDIFile
 
-class Main():
-    def __init__(self, output_file_name) -> None:
+class ImageImport():
+    def __init__(self, image_path) -> None:
+        self.image_path = image_path
+
+    def import_image(self):
+        self.img = Image.open(self.image_path)
+        self.map = asarray(self.img)
+
+class MidiProcessor():
+    def __init__(self, midi_file_name, image_import) -> None:
+        self.midi_file_name = midi_file_name
+        self.image_import = image_import
+
         self.track = 0
         self.channel = 0
         self.time = 0                # in beats
         self.duration = 4            # in beats
         self.tempo = 120             # BPM
         self.volume = 100            # 0 - 127 (MIDI standard)
-        self.volume_low_lim = 75       # low limit for volume
+        self.volume_low_lim = 75     # low limit for volume
 
         self.midi_file = MIDIFile(1)
         self.midi_file.addTempo(self.track, self.time, self.tempo)
-        self.song_name = output_file_name
-
-    def import_image(self, imagePath):
-        self.img = Image.open(imagePath)
-        self.map = asarray(self.img)
 
     def create_midi(self):
-        for idx, row in enumerate(self.map):
+        for idx, row in enumerate(self.image_import.map):
             for jdx, pixel in enumerate(row):
                 """
                     (R,G,B)
@@ -37,10 +43,18 @@ class Main():
                     self.volume = self.volume_low_lim if int(pixel[2]) > self.volume_low_lim else int(pixel[2])
                 self.midi_file.addNote(self.track, self.channel, pitch, self.time+idx+jdx+self.duration, self.duration, self.volume)
 
-        with open(self.song_name, 'wb') as f:
+        with open(self.midi_file_name, 'wb') as f:
             self.midi_file.writeFile(f)
 
+class Main():
+    def __init__(self, midi_file_name, image_path) -> None:
+        self.i = ImageImport(image_path)
+        self.m = MidiProcessor(midi_file_name, self.i)
+
+    def execute(self):
+        self.i.import_image()
+        self.m.create_midi()
+
 if __name__ == '__main__':
-    m = Main('song.midi')
-    m.import_image('.\\images\\tester.bmp')
-    m.create_midi()
+    m = Main('song.midi', '.\\images\\tester.bmp')
+    m.execute()
