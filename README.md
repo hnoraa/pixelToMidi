@@ -265,6 +265,35 @@ This can be used to change the "instrument" of the track. Aka the sound
         - Could be tracks[A % len(tracks)] 
 3. Save midi file
 
+## More MIDI Miscellany
+
+If using quarter note based time parameters, this is the float array starting at longa. This was found on Wikipedia...
+
+|Note Name                     |Duration|Duration as float   |
+|------------------------------|--------|--------------------|
+|Longa                         |4       |4.0                 |
+|Double whole note             |2       |2.0                 |
+|Whole note                    |1       |1.0                 |
+|Half note                     |1/2     |0.5                 |
+|Quarter note                  |1/4     |0.25                |
+|Eight note                    |1/8     |0.125               |
+|Sixteenth note                |1/16    |0.0625              |
+|Thirty-Second note            |1/32    |0.03125             |
+|Sixty-Fourth note             |1/64    |0.015625            |
+|One Hundred Twenty-Eighth note|1/128   |0.0078125           |
+|------------------------------|--------|--------------------|
+|**Note:** Most of these may not be used but are here anyways| 
+
+
+``` python
+    # longa = 4, double whole note = 2, whole note = 1, half = 1/2, 
+    # quarter = 1/4, eighth = 1/8, sixteenth = 1/16, thirty-second = 1/32, 
+    # sixty-fourth = 1/64, hundred twenty-eighth = 1/128
+    self.noteDurations = [
+        4, 2, 1, 0.5, 0.25, 0.125, 0.0625, 0.03125, 0.015625, 0.0078125
+    ]
+```
+
 ## Getting set up
 ### Install Pillow
 
