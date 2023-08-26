@@ -40,14 +40,16 @@ class MidiProcessor():
     def create_midi(self, pixel_map):
         for idx, row in enumerate(pixel_map):
             """
-                        (R,G,B)
-                        0-255 values
-                        MIDI notes are from 0-127
-                        structure:
-                        R - pitch (R/2) if greater than 127 else R val
-                        G - duration
-                        B - volume 100 if greater than 100, else B val
-                    """
+                (R,G,B) or (R,B,G,A)
+                0-255 values
+                MIDI notes are from 0-127
+                structure:
+                R - pitch (R/2) if greater than 127 else R val
+                G - duration
+                B - volume 100 if greater than 100, else B val
+                A - (optional) I think this could be useful for multi-tracking
+                    Ex: say you have 4 tracks, A value is 100, the current track could be tracks[A % len(tracks)]
+            """
             pitch = int(row[0]//2) if int(row[0]) > 127 else int(row[0])
             if len(row) > 1:
                 self.volume = self.volume_low_lim if int(row[2]) > self.volume_low_lim else int(row[2])
@@ -62,11 +64,11 @@ class Main():
         self.m = MidiProcessor(midi_file_name)
 
     def execute(self, debug=False):
-        self.i.import_image()
-        self.m.create_midi(self.i.img_map)
-
         if debug:
             m.i.test_image_array()
+        else:
+            self.i.import_image()
+            self.m.create_midi(self.i.img_map)
 
 if __name__ == '__main__':
     m = Main('song.midi', '.\\images\\tester.bmp')

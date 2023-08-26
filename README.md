@@ -245,7 +245,7 @@ This can be used to change the "instrument" of the track. Aka the sound
             - pitch = R
     2. Take the G value
         - G is note duration
-        - still working on this one
+        - Still working on this one
     3. Take the B value
         - B is volume
         1. If B > 100
@@ -256,7 +256,7 @@ This can be used to change the "instrument" of the track. Aka the sound
         - This may be missing in a bmp or png
         - Optional parameter
         - Might be useful for multiple tracks?
-        - Could be tracks[G % len(tracks)] 
+        - Could be tracks[A % len(tracks)] 
 3. Save midi file
 
 ## Getting set up
