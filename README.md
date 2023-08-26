@@ -281,7 +281,8 @@ If using quarter note based time parameters, this is the float array starting at
 |Thirty-Second note            |1/32    |0.03125             |
 |Sixty-Fourth note             |1/64    |0.015625            |
 |One Hundred Twenty-Eighth note|1/128   |0.0078125           |
-<small>**Note:** Most of these may not be used but are here anyways</small>
+
+<sub>**Note:** Most of these may not be used but are here anyways</sub>
 
 
 ``` python
