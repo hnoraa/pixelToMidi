@@ -285,12 +285,12 @@ If using quarter note based time parameters, this is the float array starting at
 
 
 ``` python
-    # longa = 4, double whole note = 2, whole note = 1, half = 1/2, 
-    # quarter = 1/4, eighth = 1/8, sixteenth = 1/16, thirty-second = 1/32, 
-    # sixty-fourth = 1/64, hundred twenty-eighth = 1/128
-    self.noteDurations = [
-        4, 2, 1, 0.5, 0.25, 0.125, 0.0625, 0.03125, 0.015625, 0.0078125
-    ]
+# longa = 4, double whole note = 2, whole note = 1, half = 1/2, 
+# quarter = 1/4, eighth = 1/8, sixteenth = 1/16, thirty-second = 1/32, 
+# sixty-fourth = 1/64, hundred twenty-eighth = 1/128
+self.noteDurations = [
+    4, 2, 1, 0.5, 0.25, 0.125, 0.0625, 0.03125, 0.015625, 0.0078125
+]
 ```
 
 ## Getting set up
