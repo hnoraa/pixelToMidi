@@ -1,5 +1,4 @@
 from PIL import Image
-from numpy import asarray
 from midiutil import MIDIFile
 
 class ImageImport():
@@ -7,13 +6,25 @@ class ImageImport():
         self.image_path = image_path
 
     def import_image(self):
-        self.img = Image.open(self.image_path)
-        self.map = asarray(self.img)
+        self.img = Image.open(self.image_path, 'r')
+        self.img_map = list(self.img.getdata())
+
+    def test_image_array(self):
+        # this might be useful...
+        # this gets the image array (no numpy)
+        self.test_array = list(self.img.getdata())
+
+        # this gets a flat version of the array
+        # ex: if I have [(255, 210, 123, 55), (90, 190, 200, 100)] in the array
+        # this flattens to [255 ,210, 123, 55, 90, 190, 200, 100]
+        self.test_array_flat = [x for sets in self.test_array for x in sets]
+
+        print(self.test_array)
+        print(self.test_array_flat)
 
 class MidiProcessor():
-    def __init__(self, midi_file_name, image_import) -> None:
+    def __init__(self, midi_file_name) -> None:
         self.midi_file_name = midi_file_name
-        self.image_import = image_import
 
         self.track = 0
         self.channel = 0
@@ -26,22 +37,21 @@ class MidiProcessor():
         self.midi_file = MIDIFile(1)
         self.midi_file.addTempo(self.track, self.time, self.tempo)
 
-    def create_midi(self):
-        for idx, row in enumerate(self.image_import.map):
-            for jdx, pixel in enumerate(row):
-                """
-                    (R,G,B)
-                    0-255 values
-                    MIDI notes are from 0-127
-                    structure:
-                    R - pitch (R/2) if greater than 127 else R val
-                    G - duration
-                    B - volume 100 if greater than 100, else B val
-                """
-                pitch = int(pixel[0]//2) if int(pixel[0]) > 127 else int(pixel[0])
-                if len(pixel) > 1:
-                    self.volume = self.volume_low_lim if int(pixel[2]) > self.volume_low_lim else int(pixel[2])
-                self.midi_file.addNote(self.track, self.channel, pitch, self.time+idx+jdx+self.duration, self.duration, self.volume)
+    def create_midi(self, pixel_map):
+        for idx, row in enumerate(pixel_map):
+            """
+                        (R,G,B)
+                        0-255 values
+                        MIDI notes are from 0-127
+                        structure:
+                        R - pitch (R/2) if greater than 127 else R val
+                        G - duration
+                        B - volume 100 if greater than 100, else B val
+                    """
+            pitch = int(row[0]//2) if int(row[0]) > 127 else int(row[0])
+            if len(row) > 1:
+                self.volume = self.volume_low_lim if int(row[2]) > self.volume_low_lim else int(row[2])
+            self.midi_file.addNote(self.track, self.channel, pitch, self.time+idx+self.duration, self.duration, self.volume)
 
         with open(self.midi_file_name, 'wb') as f:
             self.midi_file.writeFile(f)
@@ -49,12 +59,16 @@ class MidiProcessor():
 class Main():
     def __init__(self, midi_file_name, image_path) -> None:
         self.i = ImageImport(image_path)
-        self.m = MidiProcessor(midi_file_name, self.i)
+        self.m = MidiProcessor(midi_file_name)
 
-    def execute(self):
+    def execute(self, debug=False):
         self.i.import_image()
-        self.m.create_midi()
+        self.m.create_midi(self.i.img_map)
+
+        if debug:
+            m.i.test_image_array()
 
 if __name__ == '__main__':
     m = Main('song.midi', '.\\images\\tester.bmp')
     m.execute()
+    
