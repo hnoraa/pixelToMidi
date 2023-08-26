@@ -1,6 +1,6 @@
 # pixelToMidi
 
-Create a midi file from an array of pixels
+Create a midi file from an array of pixels. **NOTE:** Right now, this works best with small **.bmp** or **.png** images. 16 x 16 seems to create a file around 2 minutes in duration.
 
 ## Requirements
 ### Major requirements
@@ -15,6 +15,12 @@ Create a midi file from an array of pixels
 
 ## TODO
 
+- [ ] Error handling
+    - [ ] Check for empty images
+    - [ ] Check for directories and paths
+    - [ ] Check that the midi file was created
+    - [ ] Determine acceptable file extensions for images
+    - [ ] Image resolution warnings
 - [ ] Note durations
 - [ ] Multiple tracks
 - [ ] Choosing instruments

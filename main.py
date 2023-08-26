@@ -34,18 +34,25 @@ class MidiProcessor():
         self.volume = 100            # 0 - 127 (MIDI standard)
         self.volume_low_lim = 75     # low limit for volume
 
+        # longa = 4, double whole note = 2, whole note = 1, half = 1/2, 
+        # quarter = 1/4, eighth = 1/8, sixteenth = 1/16, thirty-second = 1/32, 
+        # sixty-fourth = 1/64, hundred twenty-eighth = 1/128
+        self.noteDurations = [
+            4, 2, 1, 0.5, 0.25, 0.125, 0.0625, 0.03125, 0.015625, 0.0078125
+        ]
+
         self.midi_file = MIDIFile(1)
         self.midi_file.addTempo(self.track, self.time, self.tempo)
 
     def create_midi(self, pixel_map):
         for idx, row in enumerate(pixel_map):
             """
-                (R,G,B) or (R,B,G,A)
+                (R,G,B) or (R,G,B,A)
                 0-255 values
                 MIDI notes are from 0-127
                 structure:
                 R - pitch (R/2) if greater than 127 else R val
-                G - duration
+                G - duration somehow this needs get from 0-255 to 0-9 for the noteDurations
                 B - volume 100 if greater than 100, else B val
                 A - (optional) I think this could be useful for multi-tracking
                     Ex: say you have 4 tracks, A value is 100, the current track could be tracks[A % len(tracks)]
