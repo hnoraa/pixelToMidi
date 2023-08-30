@@ -31,7 +31,7 @@ class ImageImport():
             print(f'Length before flattening: {len(self.test_array)}')
             print(f'Flattened length: {len(self.test_array_flat)}\n')
 
-    def split_image_array(self, num_tracks=1):
+    def split_image_array_test(self, num_tracks=1):
         if self.img_map is not None:
             track_split = len(self.img_map) // num_tracks
 
@@ -49,9 +49,23 @@ class ImageImport():
             for i in range(0, len(self.track_map)):
                 print(self.track_map[i])
 
+    def split_image_array(self, num_tracks=1):
+        if self.img_map is not None:
+            track_split = len(self.img_map) // num_tracks
+
+            self.track_map = []
+            for i in range(0, len(self.img_map)):
+                sub_split = i % track_split
+
+                if sub_split == 0:
+                    new_list = []
+                    for j in range(i, i + track_split):
+                        new_list.append(self.img_map[j])
+                    self.track_map.append(new_list)
+
 
 class MidiProcessor():
-    def __init__(self, midi_file_name) -> None:
+    def __init__(self, midi_file_name, num_tracks=1) -> None:
         self.midi_file_name = midi_file_name
 
         self.track = 0
@@ -69,7 +83,7 @@ class MidiProcessor():
             4, 2, 1, 0.5, 0.25, 0.125, 0.0625, 0.03125, 0.015625, 0.0078125
         ]
 
-        self.midi_file = MIDIFile(1)
+        self.midi_file = MIDIFile(num_tracks)
         self.midi_file.addTempo(self.track, self.time, self.tempo)
 
     def create_midi(self, pixel_map):
@@ -93,10 +107,24 @@ class MidiProcessor():
         with open(self.midi_file_name, 'wb') as f:
             self.midi_file.writeFile(f)
 
+    def create_midi_multi_track(self, track_map, tracks):
+        for i, track in enumerate(tracks):
+            self.midi_file.addProgramChange(i, i, 0, track['program'])
+            for idx, row in enumerate(track_map[i]):
+                pitch = int(row[0]//2) if int(row[0]) > 127 else int(row[0])
+                if len(row) > 1:
+                    self.volume = self.volume_low_lim if int(row[2]) > self.volume_low_lim else int(row[2])
+                self.midi_file.addNote(i, i, pitch, self.time+idx+self.duration, self.duration, self.volume)
+
+        with open(self.midi_file_name, 'wb') as f:
+            self.midi_file.writeFile(f)
+
 class Main():
-    def __init__(self, midi_file_name, image_path) -> None:
+    def __init__(self, midi_file_name, image_path, tracks) -> None:
+        self.tracks = tracks
+
         self.i = ImageImport(image_path)
-        self.m = MidiProcessor(midi_file_name)
+        self.m = MidiProcessor(midi_file_name, len(self.tracks))
 
     def execute(self, debug=False):
         self.i.import_image()
@@ -104,11 +132,19 @@ class Main():
         if debug:
             m.i.describe()
             m.i.test_image_array()
-            m.i.split_image_array(2)
+            m.i.split_image_array_test(2)
         else:
-            self.m.create_midi(self.i.img_map)
+            m.i.split_image_array(len(self.tracks))
+            self.m.create_midi_multi_track(m.i.track_map, self.tracks)
 
 if __name__ == '__main__':
-    m = Main('song.midi', '.\\images\\tester.bmp')
-    m.execute(debug=True)
+    tracks = [
+        { 'name': 'Track 1', 'program': 1},
+        { 'name': 'Track 2', 'program': 19},
+        { 'name': 'Track 3', 'program': 49},
+        { 'name': 'Track 4', 'program': 47},
+    ]
+
+    m = Main('song.midi', '.\\images\\tester.bmp', tracks)
+    m.execute(debug=False)
     

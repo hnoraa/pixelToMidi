@@ -25,7 +25,7 @@ Create a midi file from an array of pixels. **NOTE:** Right now, this works best
     - [ ] Determine acceptable file extensions for images
     - [ ] Image resolution warnings
 - [ ] Note durations
-- [ ] Multiple tracks
+- [x] Multiple tracks
 - [ ] Choosing instruments
 - [ ] User interface
 
