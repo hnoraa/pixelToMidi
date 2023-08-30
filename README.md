@@ -2,6 +2,9 @@
 
 Create a midi file from an array of pixels. **NOTE:** Right now, this works best with small **.bmp** or **.png** images. 16 x 16 seems to create a file around 2 minutes in duration.
 
+## Running it
+`python main.py`
+
 ## Requirements
 ### Major requirements
 

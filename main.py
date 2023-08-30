@@ -4,23 +4,36 @@ from midiutil import MIDIFile
 class ImageImport():
     def __init__(self, image_path) -> None:
         self.image_path = image_path
+        self.img = None
+        self.img_map = None
 
     def import_image(self):
         self.img = Image.open(self.image_path, 'r')
         self.img_map = list(self.img.getdata())
 
+    def describe(self):
+        if self.img is not None:
+            print(f'{self.image_path} details:')
+            print(f'Image size (w, h):\t{self.img.width} x {self.img.height}')
+            print(f'Image format:\t\t{self.img.format}\n')
+
     def test_image_array(self):
-        # this might be useful...
-        # this gets the image array (no numpy)
-        self.test_array = list(self.img.getdata())
+        if self.img is not None:
+            # this might be useful...
+            # this gets the image array (no numpy)
+            self.test_array = list(self.img.getdata())
 
-        # this gets a flat version of the array
-        # ex: if I have [(255, 210, 123, 55), (90, 190, 200, 100)] in the array
-        # this flattens to [255 ,210, 123, 55, 90, 190, 200, 100]
-        self.test_array_flat = [x for sets in self.test_array for x in sets]
+            # this gets a flat version of the array
+            # ex: if I have [(255, 210, 123, 55), (90, 190, 200, 100)] in the array
+            # this flattens to [255 ,210, 123, 55, 90, 190, 200, 100]
+            self.test_array_flat = [x for sets in self.test_array for x in sets]
 
-        print(self.test_array)
-        print(self.test_array_flat)
+            print(f'Length before flattening: {len(self.test_array)}')
+            print(f'Flattened length: {len(self.test_array_flat)}\n')
+            print(self.test_array)
+
+    def split_image_array(self, num_tracks=1):
+        pass
 
 class MidiProcessor():
     def __init__(self, midi_file_name) -> None:
@@ -71,13 +84,16 @@ class Main():
         self.m = MidiProcessor(midi_file_name)
 
     def execute(self, debug=False):
+        self.i.import_image()
+
         if debug:
+            m.i.describe()
             m.i.test_image_array()
+            m.i.split_image_array()
         else:
-            self.i.import_image()
             self.m.create_midi(self.i.img_map)
 
 if __name__ == '__main__':
     m = Main('song.midi', '.\\images\\tester.bmp')
-    m.execute()
+    m.execute(debug=True)
     
