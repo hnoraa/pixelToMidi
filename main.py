@@ -30,10 +30,25 @@ class ImageImport():
 
             print(f'Length before flattening: {len(self.test_array)}')
             print(f'Flattened length: {len(self.test_array_flat)}\n')
-            print(self.test_array)
 
     def split_image_array(self, num_tracks=1):
-        pass
+        if self.img_map is not None:
+            track_split = len(self.img_map) // num_tracks
+
+            self.track_map = []
+            for i in range(0, len(self.img_map)):
+                sub_split = i % track_split
+
+                if sub_split == 0:
+                    new_list = []
+                    for j in range(i, i + track_split):
+                        new_list.append(self.img_map[j])
+                    self.track_map.append(new_list)
+
+            print(f'New map of length {len(self.track_map)} with {num_tracks} lists of length {track_split}')
+            for i in range(0, len(self.track_map)):
+                print(self.track_map[i])
+
 
 class MidiProcessor():
     def __init__(self, midi_file_name) -> None:
@@ -89,7 +104,7 @@ class Main():
         if debug:
             m.i.describe()
             m.i.test_image_array()
-            m.i.split_image_array()
+            m.i.split_image_array(2)
         else:
             self.m.create_midi(self.i.img_map)
 
