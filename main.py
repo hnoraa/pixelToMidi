@@ -114,6 +114,7 @@ class MidiProcessor():
                 pitch = int(row[0]//2) if int(row[0]) > 127 else int(row[0])
                 if len(row) > 1:
                     self.volume = self.volume_low_lim if int(row[2]) > self.volume_low_lim else int(row[2])
+                    self.duration = self.noteDurations[row[1] % 9]
                 self.midi_file.addNote(i, i, pitch, self.time+idx+self.duration, self.duration, self.volume)
 
         with open(self.midi_file_name, 'wb') as f:
