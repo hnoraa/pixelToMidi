@@ -108,6 +108,18 @@ class MidiProcessor():
             self.midi_file.writeFile(f)
 
     def create_midi_multi_track(self, track_map, tracks):
+        """
+            (R,G,B) or (R,G,B,A)
+            0-255 values
+            MIDI notes are from 0-127
+            structure:
+            R - pitch (R/2) if greater than 127 else R val
+            G - duration somehow this needs get from 0-255 to 0-9 for the noteDurations
+            B - volume 100 if greater than 100, else B val
+            A - (optional) I think this could be useful for multi-tracking
+                Ex: say you have 4 tracks, A value is 100, the current track could be tracks[A % len(tracks)]
+        """
+        
         for i, track in enumerate(tracks):
             self.midi_file.addProgramChange(i, i, 0, track['program'])
             for idx, row in enumerate(track_map[i]):
