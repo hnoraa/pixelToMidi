@@ -24,10 +24,38 @@ Create a midi file from an array of pixels. **NOTE:** Right now, this works best
     - [ ] Check that the midi file was created
     - [ ] Determine acceptable file extensions for images
     - [ ] Image resolution warnings
-- [ ] Note durations
+- [x] Note durations
+- [ ] Tempo
 - [x] Multiple tracks
 - [ ] Choosing instruments
+- [ ] Song "structure" aka config
 - [ ] User interface
+
+## Proposed song config
+``` json
+{
+    "song": "song name",
+    "tempo": 120,
+    "tracks": [
+        {
+            "name": "track 1",
+            "program": 1
+        },
+        {
+            "name": "track 2",
+            "program": 2
+        },
+        {
+            "name": "track 3",
+            "program": 4
+        },
+        {
+            "name": "track 4",
+            "program": 5
+        }
+    ]
+}
+```
 
 ## Notes
 ### PIL (Pillow)
