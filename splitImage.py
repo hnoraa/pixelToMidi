@@ -12,10 +12,13 @@ The result of this is to have a structure like this. This is with a split factor
 
 img = Image.open('.\\images\\tester.bmp', 'r')
 img_list = list(img.getdata())
+
+# if you want 4 sub lists, divide len of list by num lists
 num_splits = 4
 split = len(img_list) // num_splits
 new_map = []
 
+# debugging print statments
 print(f'Image size (w, h):\t{img.width} x {img.height}')
 print(f'Image list length:\t{len(img_list)}\n')
 print(f'Splitting image list into {num_splits} splits of length {split}')
@@ -23,14 +26,18 @@ print(f'Splitting image list into {num_splits} splits of length {split}')
 for i in range(0, len(img_list)):
     sub_split = i % split
 
+    # mod 0 designates the start of the list
     if sub_split == 0:
         new_list = []
+
+        # get the appropriate values
         print(f'New Array @ {i}')
         for j in range(i, i + split):
             new_list.append(img_list[j])
 
         new_map.append(new_list)
-        
+
+# debugging stuff 
 print(f'New map of length {len(new_map)} with {num_splits} of length {split}')
 for i in range(0, len(new_map)):
     print(new_map[i])
