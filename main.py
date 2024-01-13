@@ -1,3 +1,5 @@
+import os
+import sys
 from PIL import Image
 from midiutil import MIDIFile
 
@@ -151,13 +153,26 @@ class Main():
             self.m.create_midi_multi_track(m.i.track_map, self.tracks)
 
 if __name__ == '__main__':
-    tracks = [
-        { 'name': 'Track 1', 'program': 1},
-        { 'name': 'Track 2', 'program': 19},
-        { 'name': 'Track 3', 'program': 49},
-        { 'name': 'Track 4', 'program': 47},
-    ]
+    if len(sys.argv) >= 3:
+        tracks = [
+            { 'name': 'Track 1', 'program': 1},
+            { 'name': 'Track 2', 'program': 19},
+            { 'name': 'Track 3', 'program': 49},
+            { 'name': 'Track 4', 'program': 47},
+        ]
 
-    m = Main('song.midi', '.\\images\\tester.bmp', tracks)
-    m.execute(debug=False)
+        midiFile = sys.argv[1]
+        imageFile = sys.argv[2]
+        isDebug = False
+
+        if len(sys.argv) == 4:
+            isDebug = True if sys.argv[3].lower() == 't' else  False
+
+        if os.path.exists(imageFile):
+            m = Main(midiFile, imageFile, tracks)
+            m.execute(debug=isDebug)
+        else:
+            print(f'Image {imageFile} not found')
+    else:
+        print('Usage: main.py <song.midi> <path to image> <debug: t|f>')
     
