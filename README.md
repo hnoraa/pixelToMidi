@@ -35,7 +35,7 @@ Create a midi file from an array of pixels.
 - [ ] Song "structure" aka config
 - [ ] User interface
 - [x] Issues with getting rgb values for pixels on some images
-- [ ] Figure out how to work with multiple image types
+- [x] Figure out how to work with multiple image types
 
 ## Proposed song config
 ``` json
