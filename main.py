@@ -10,7 +10,7 @@ class ImageImport():
         self.img_map = None
 
     def import_image(self):
-        self.img = Image.open(self.image_path, 'r')
+        self.img = Image.open(self.image_path, 'r').convert('RGB')
         self.img_map = list(self.img.getdata())
 
     def describe(self):
