@@ -1,6 +1,10 @@
 # pixelToMidi
 
-Create a midi file from an array of pixels. **NOTE:** Right now, this works best with small **.bmp** or **.png** images. 16 x 16 seems to create a file around 2 minutes in duration.
+Create a midi file from an array of pixels. 
+
+**NOTE:** Right now, this works best with small **.bmp** or **.png** images. 16 x 16 seems to create a file around 2 minutes in duration.
+
+**NOTE:** There seems to be an issue with it only working with 32-bit .bmps
 
 ## Running it
 `python main.py`
@@ -30,6 +34,7 @@ Create a midi file from an array of pixels. **NOTE:** Right now, this works best
 - [ ] Choosing instruments
 - [ ] Song "structure" aka config
 - [ ] User interface
+- [ ] Figure out how to work with multiple image types (get pixels for all)
 
 ## Proposed song config
 ``` json

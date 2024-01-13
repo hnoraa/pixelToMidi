@@ -65,7 +65,6 @@ class ImageImport():
                         new_list.append(self.img_map[j])
                     self.track_map.append(new_list)
 
-
 class MidiProcessor():
     def __init__(self, midi_file_name, num_tracks=1) -> None:
         self.midi_file_name = midi_file_name
@@ -125,7 +124,7 @@ class MidiProcessor():
         for i, track in enumerate(tracks):
             self.midi_file.addProgramChange(i, i, 0, track['program'])
             for idx, row in enumerate(track_map[i]):
-                pitch = int(row[0]//2) if int(row[0]) > 127 else int(row[0])
+                pitch = int(row[0]//2) if int(row[0]) >= 128 else int(row[0])
                 if len(row) > 1:
                     self.volume = self.volume_low_lim if int(row[2]) > self.volume_low_lim else int(row[2])
                     self.duration = self.noteDurations[row[1] % 9]
@@ -169,6 +168,7 @@ if __name__ == '__main__':
             isDebug = True if sys.argv[3].lower() == 't' else  False
 
         if os.path.exists(imageFile):
+            print(f'Creating MIDI file {midiFile} from {imageFile} (Debug: {isDebug})')
             m = Main(midiFile, imageFile, tracks)
             m.execute(debug=isDebug)
         else:
