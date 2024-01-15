@@ -1,4 +1,4 @@
-# pixelToMidi
+# pixelToMidi - A MIDI generator
 
 Create a midi file from an array of pixels. 
 
@@ -7,7 +7,39 @@ Create a midi file from an array of pixels.
 **NOTE:** There seems to be an issue with it only working with 32-bit .bmps
 
 ## Running it
-`python main.py`
+`python main.py <config_file.json> <debug: t|f>`
+
+### Arguments
+
+- `<config_file.json>` - the path to the config file
+
+### Sample config file
+
+``` json
+{
+    "song": "song name",
+    "tempo": 120,
+    "outputFilename": "song.midi",
+    "tracks": [
+        {
+            "name": "track 1",
+            "program": 1
+        },
+        {
+            "name": "track 2",
+            "program": 2
+        },
+        {
+            "name": "track 3",
+            "program": 4
+        },
+        {
+            "name": "track 4",
+            "program": 5
+        }
+    ]
+}
+```
 
 ## Requirements
 ### Major requirements
@@ -36,32 +68,6 @@ Create a midi file from an array of pixels.
 - [ ] User interface
 - [x] Issues with getting rgb values for pixels on some images
 - [x] Figure out how to work with multiple image types
-
-## Proposed song config
-``` json
-{
-    "song": "song name",
-    "tempo": 120,
-    "tracks": [
-        {
-            "name": "track 1",
-            "program": 1
-        },
-        {
-            "name": "track 2",
-            "program": 2
-        },
-        {
-            "name": "track 3",
-            "program": 4
-        },
-        {
-            "name": "track 4",
-            "program": 5
-        }
-    ]
-}
-```
 
 ## Notes
 ### PIL (Pillow)
@@ -288,7 +294,9 @@ This can be used to change the "instrument" of the track. Aka the sound
             - pitch = R
     2. Take the G value
         - G is note duration
-        - Still working on this one
+        - The noteDurations array has 9 items
+        1. Get the remainder of G % length of noteDurations array
+        2. Apply that to the noteDurations to get the duration
     3. Take the B value
         - B is volume
         1. If B > 100
