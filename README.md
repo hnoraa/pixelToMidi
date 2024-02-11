@@ -66,6 +66,11 @@ Create a midi file from an array of pixels.
 - [ ] Choosing instruments
 - [ ] Song "structure" aka config
 - [ ] User interface
+    - [ ] Pixel grid
+    - [ ] MIDI Program select
+    - [ ] Show RGB color of the current pixel using the values from the different HMI values
+    - [ ] better UI styles
+    - [ ] dark mode
 - [x] Issues with getting rgb values for pixels on some images
 - [x] Figure out how to work with multiple image types
 - [ ] Add in a triplet modifier
