@@ -1,6 +1,8 @@
 {
     "song": "song name",
+    "outputFilename": "song.midi",
     "tempo": 120,
+    "image": "",
     "tracks": [
         {
             "name": "track 1",
