@@ -1,0 +1,31 @@
+#board {
+    display: flex;
+    justify-content: center;
+}
+
+.key {
+    height: 80px;
+    border: 1px solid black;
+    text-align: center;
+    padding: 0;
+    justify-content: center;
+    align-items: flex-end;
+    width: 50px;
+}
+
+.white {
+    background-color: #ffffe6;
+}
+
+.white:hover {
+    background-color: #c9c9b6;
+}
+
+.black {
+    background-color: #181717;
+    color: #ffffff;
+}
+
+.black:hover {
+    background-color: #2b2929;
+}

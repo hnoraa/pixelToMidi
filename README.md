@@ -68,6 +68,7 @@ Create a midi file from an array of pixels.
 - [ ] User interface
 - [x] Issues with getting rgb values for pixels on some images
 - [x] Figure out how to work with multiple image types
+- [ ] Add in a triplet modifier
 
 ## Notes
 ### PIL (Pillow)
