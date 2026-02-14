@@ -1,0 +1,38 @@
+#gridArea {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(1fr, 1fr));
+    grid-auto-rows: 1fr;
+    width: 100%;
+    height: 100%;
+    aspect-ratio: var(--width) / var(--height, 1);
+    gap: 0;
+    border: 3px solid black;
+    box-sizing: border-box;
+}
+
+.grid-cell {
+    border: 1px solid lightgray;
+    cursor: pointer;
+    background-color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    position: relative;
+    transition: background-color 0.1s ease;
+}
+
+.grid-cell:hover {
+    background-color: #d3d3d3 !important;
+}
+
+.grid-cell.clicked {
+    background-color: #d0d0d0 !important;
+}
+
+.cell-content {
+    text-align: center;
+    color: white;
+    font-weight: bold;
+    line-height: 1.2;
+}

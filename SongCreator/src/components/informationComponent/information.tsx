@@ -7,9 +7,11 @@ import { NoteDurations } from '../../data/noteDurations';
 interface Props {
     currentOctaveNumber: number;
     currentNoteDurationNumber: number;
+    gridHeight: number;
+    gridWidth: number;
 }
 
-export default function Information({ currentOctaveNumber, currentNoteDurationNumber }: Props) {
+export default function Information({ currentOctaveNumber, currentNoteDurationNumber, gridHeight, gridWidth }: Props) {
     const [currentOctave, setCurrentOctave] = useState<Octave>();
     const [currentNoteDuration, setNoteDuration] = useState<NoteDuration>();
 
@@ -23,15 +25,21 @@ export default function Information({ currentOctaveNumber, currentNoteDurationNu
         setNoteDuration(noteDuration);
     }, [currentNoteDurationNumber]);
     return (
-        <div>
-            <div>
-                <span>Current Octave: {currentOctave?.octaveNumber}</span>
-
-                <span>Range: {currentOctave?.frequencyRange?.min}Hz - {currentOctave?.frequencyRange?.max}Hz</span>
-            </div>
-            <div>
-                <span>Current Note Duration: {currentNoteDuration?.friendly} ({currentNoteDuration?.fraction})</span>
-            </div>
-        </div>
+        <table style={{ borderCollapse: 'collapse', width: '100%' }}>
+            <tbody>
+                <tr>
+                    <td>Current Octave: {currentOctave?.octaveNumber}</td>
+                </tr>
+                <tr>
+                    <td>Range: {currentOctave?.frequencyRange?.min}Hz - {currentOctave?.frequencyRange?.max}Hz</td>
+                </tr>
+                <tr>
+                    <td>Current Note Duration: {currentNoteDuration?.friendly} ({currentNoteDuration?.fraction})</td>
+                </tr>
+                <tr>
+                    <td>Grid Size: {gridWidth} x {gridHeight}</td>
+                </tr>
+            </tbody>
+        </table>
     )
 }

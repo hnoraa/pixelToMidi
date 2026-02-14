@@ -6,9 +6,10 @@ import { Octaves } from '../../data/octaves';
 
 interface Props {
     currentOctaveNumber: number;
+    onKeyClick: (key: string, octave: number, midiNumber: number) => void;
 }
 
-export default function Keyboard({currentOctaveNumber} : Props) {
+export default function Keyboard({currentOctaveNumber, onKeyClick} : Props) {
     const keys = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
     const [pressedKeys, setPressedKeys] = useState<string[]>([]);
     const [currentOctave, setCurrentOctave] = useState<Octave>();
@@ -35,7 +36,12 @@ export default function Keyboard({currentOctaveNumber} : Props) {
                         md="1" 
                         key={index} 
                         className={`key ${pressedKeys.includes(key) ? 'pressed' : ''} ${key.includes('#') ? 'black' : 'white'}`}
-                        onMouseDown={() => handleKeyPress(key)}
+                        onMouseDown={() => {
+                            handleKeyPress(key);
+                            if (currentOctave?.midiNoteNumbers) {
+                                onKeyClick(key, currentOctaveNumber, currentOctave.midiNoteNumbers[index]);
+                            }
+                        }}
                         onMouseUp={() => handleKeyRelease(key)}
                         >
                         {key}<br />{currentOctave?.midiNoteNumbers[index]}
