@@ -2,11 +2,11 @@ import { useState } from 'react';
 import { Container, Row, Col, Navbar, NavbarBrand, Nav, NavbarToggler, Collapse, NavItem, NavLink } from 'reactstrap';
 import Keyboard from '../keyboardComponent/keyboard';
 import './layout.css';
-import OctaveSelect from '../octaveComponent/octaveSelect';
 import Information from '../informationComponent/information';
-import NoteDurationSelect from '../noteDurationComponent/noteDurationSelect';
 import PixelGrid from '../pixelGridComponent/pixelGrid';
-import GridSize from '../gridSizeComponent/gridSize';
+import SongInfo from '../songInfoComponent/songInfo';
+import ConfigComponent from '../configComponent/configComponent';
+import Song from '../../models/song';
 
 export default function Layout() {
   const [isOpen, setIsOpen] = useState<boolean>(false);
@@ -20,6 +20,14 @@ export default function Layout() {
   const [selectedMidiNumber, setSelectedMidiNumber] = useState<number | undefined>(undefined);
   const [selectedCellIndex, setSelectedCellIndex] = useState<number>(0);
   const [keyPressId, setKeyPressId] = useState<number>(0);
+  const [gridData, setGridData] = useState<Map<number, { note: string; octave: number; midiNumber: number; duration: number }>>(new Map());
+  const [song, setSong] = useState<Song>({
+    song: 'New Song',
+    tempo: 120,
+    outputFilename: 'song.midi',
+    size: 16,
+    tracks: []
+  });
 
   const handleOctaveChange = (octave: number) => {
     setCurrentOctave(octave);
@@ -32,6 +40,10 @@ export default function Layout() {
   const handleGridSizeChange = (width: number, height: number) => {
     setGridWidth(width);
     setGridHeight(height);
+    setSong(prevSong => ({
+      ...prevSong,
+      size: width
+    }));
   };
 
   const handleKeyClick = (note: string, octave: number, midiNumber: number) => {
@@ -63,7 +75,7 @@ export default function Layout() {
       </Navbar>
       <Row id="canvasArea">
         <Col md="2">
-          Song Info
+          <SongInfo song={song} gridHeight={gridHeight} gridWidth={gridWidth} />
         </Col>
         <Col md="8">
           <PixelGrid 
@@ -75,17 +87,26 @@ export default function Layout() {
             currentNoteDuration={currentNoteDuration}
             keyPressId={keyPressId}
             onCellSelect={handleCellSelect}
+            onGridDataChange={setGridData}
           />
         </Col>
         <Col md="2">
           
         </Col>
       </Row>
-      <Row className="15">
+      <Row id="configArea" className="configRow">
         <Col md="2">
-          <OctaveSelect currentOctave={currentOctave} onOctaveChange={handleOctaveChange} />
-          <GridSize onGridSizeChange={handleGridSizeChange} />
-          <NoteDurationSelect currentNoteDuration={currentNoteDuration} onNoteDurationChange={handleNoteDurationChange} />
+          <ConfigComponent 
+            currentOctave={currentOctave} 
+            onOctaveChange={handleOctaveChange}
+            currentNoteDuration={currentNoteDuration}
+            onNoteDurationChange={handleNoteDurationChange}
+            onGridSizeChange={handleGridSizeChange}
+            song={song}
+            gridData={gridData}
+            gridWidth={gridWidth}
+            gridHeight={gridHeight}
+          />
         </Col>
         <Col md="8">
           <Keyboard currentOctaveNumber={currentOctave} onKeyClick={handleKeyClick} />

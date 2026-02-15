@@ -1,5 +1,6 @@
 import './pixelGrid.css';
 import { useState, useEffect, useRef } from 'react';
+import { NoteDurations } from '../../data/noteDurations';
 
 interface Props {
     height: number;
@@ -10,9 +11,10 @@ interface Props {
     currentNoteDuration?: number;
     keyPressId?: number;
     onCellSelect?: (cellIndex: number) => void;
+    onGridDataChange?: (gridData: Map<number, { note: string; octave: number; midiNumber: number; duration: number }>) => void;
 };
 
-export default function PixelGrid({ height, width, currentNote, currentOctave, currentMidiNumber, currentNoteDuration, keyPressId, onCellSelect }: Props) {
+export default function PixelGrid({ height, width, currentNote, currentOctave, currentMidiNumber, currentNoteDuration, keyPressId, onCellSelect, onGridDataChange }: Props) {
     const [clickedCell, setClickedCell] = useState<number>(0);
     const [cellNotes, setCellNotes] = useState<Map<number, { note: string; octave: number; midiNumber: number; duration: number }>>(new Map());
     const previousKeyPressIdRef = useRef<number>(-1);
@@ -31,10 +33,13 @@ export default function PixelGrid({ height, width, currentNote, currentOctave, c
             setCellNotes(prevCellNotes => {
                 const newCellNotes = new Map(prevCellNotes);
                 newCellNotes.set(clickedCell, { note: currentNote, octave: currentOctave, midiNumber: currentMidiNumber, duration: currentNoteDuration });
+                if (onGridDataChange) {
+                    onGridDataChange(newCellNotes);
+                }
                 return newCellNotes;
             });
         }
-    }, [keyPressId, clickedCell, currentNote, currentOctave, currentMidiNumber, currentNoteDuration]);
+    }, [keyPressId, clickedCell, currentNote, currentOctave, currentMidiNumber, currentNoteDuration, onGridDataChange]);
 
     let gridItems: JSX.Element[] = [];
     for (let i = 0; i < height; i++) {
@@ -64,7 +69,10 @@ export default function PixelGrid({ height, width, currentNote, currentOctave, c
                     {cellNote && (
                         <div className="cell-content">
                             <div>{cellNote.note}</div>
-                            <div>{cellNote.midiNumber}</div>
+                            <div style={{ fontSize: '0.6em', display: 'flex', gap: '4px', justifyContent: 'center' }}>
+                                <span>{cellNote.midiNumber}</span>
+                                <span>{NoteDurations[cellNote.duration]?.short || cellNote.duration}</span>
+                            </div>
                         </div>
                     )}
                 </div>
@@ -73,15 +81,34 @@ export default function PixelGrid({ height, width, currentNote, currentOctave, c
     }
 
     return (
-        <div 
-            id="gridArea"
-            style={{
-                gridTemplateColumns: `repeat(${width}, 1fr)`,
-                gridTemplateRows: `repeat(${height}, 1fr)`,
-                gridAutoRows: undefined,
-            } as React.CSSProperties}
-        >
-            {gridItems}
+        <div id="pixelGridContainer" style={{
+            display: 'grid',
+            gridTemplateColumns: '1fr',
+            gridTemplateRows: '1fr',
+            width: '100%',
+            height: '100%',
+        }}>
+            <div 
+                id="scrollWrapper"
+                style={{
+                    overflow: 'auto',
+                    boxSizing: 'border-box',
+                }}
+            >
+                <div 
+                    id="gridArea"
+                    style={{
+                        display: 'grid',
+                        gridTemplateColumns: `repeat(${width}, 40px)`,
+                        gridTemplateRows: `repeat(${height}, 40px)`,
+                        width: 'fit-content',
+                        height: 'fit-content',
+                        border: '3px solid black',
+                    } as React.CSSProperties}
+                >
+                    {gridItems}
+                </div>
+            </div>
         </div>
     )
 }
