@@ -8,9 +8,15 @@ interface Props {
     onOctaveChange: (octave: number) => void;
     currentNoteDuration: number;
     onNoteDurationChange: (noteDuration: number) => void;
+    currentVelocity: number;
+    onVelocityChange: (velocity: number) => void;
     onGridSizeChange: (width: number, height: number) => void;
+    onGridDataChange?: (gridData: Map<number, { note: string; octave: number; midiNumber: number; duration: number; velocity?: number }>) => void;
     song?: Song;
-    gridData?: Map<number, { note: string; octave: number; midiNumber: number; duration: number }>;
+    gridData?: Map<number, { note: string; octave: number; midiNumber: number; duration: number; velocity?: number }>;
+    selectedNote?: string;
+    selectedMidiNumber?: number;
+    selectedOctave?: number;
     gridWidth?: number;
     gridHeight?: number;
 }
@@ -20,12 +26,19 @@ export default function ConfigComponent({
     onOctaveChange,
     currentNoteDuration,
     onNoteDurationChange,
+    currentVelocity,
+    onVelocityChange,
     onGridSizeChange,
     song,
     gridData,
+    onGridDataChange,
+    selectedNote,
+    selectedMidiNumber,
+    selectedOctave,
     gridWidth = 16,
     gridHeight = 16
 }: Props) {
+    const currentOctaveObj = Octaves.find(o => o.octaveNumber === currentOctave);
     const handleOctaveChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
         const selectedOctave = parseInt(e.target.value);
         onOctaveChange(selectedOctave);
@@ -34,6 +47,14 @@ export default function ConfigComponent({
     const handleNoteDurationChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
         const selectedNoteDuration = parseInt(e.target.value);
         onNoteDurationChange(selectedNoteDuration);
+    };
+
+    const handleVelocityChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        let velocity = parseInt(e.target.value);
+        if (isNaN(velocity)) velocity = 127;
+        if (velocity < 0) velocity = 0;
+        if (velocity > 127) velocity = 127;
+        onVelocityChange(velocity);
     };
 
     const handleGridSizeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -113,9 +134,41 @@ export default function ConfigComponent({
         });
     };
 
+    const handleFill = () => {
+        if (!onGridDataChange) {
+            alert('Fill not available');
+            return;
+        }
+
+        if (!selectedNote || selectedMidiNumber === undefined) {
+            alert('No note selected to fill with');
+            return;
+        }
+
+        const newMap = new Map<number, { note: string; octave: number; midiNumber: number; duration: number; velocity?: number }>();
+        const total = gridWidth * gridHeight;
+        for (let i = 0; i < total; i++) {
+            newMap.set(i, { note: selectedNote, octave: selectedOctave ?? currentOctave, midiNumber: selectedMidiNumber, duration: currentNoteDuration, velocity: currentVelocity });
+        }
+
+        onGridDataChange(newMap);
+    };
+
+    const handleClear = () => {
+        if (!onGridDataChange) {
+            alert('Clear not available');
+            return;
+        }
+
+        const confirmed = window.confirm('Clear entire grid? This will remove all notes. Continue?');
+        if (!confirmed) return;
+
+        onGridDataChange(new Map());
+    };
+
     return (
-        <div>
-            <div>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', alignItems: 'stretch' }}>
+            <div style={{ display: 'flex', flexDirection: 'column' }}>
                 <label htmlFor="octave-select">Select Octave:</label>
                 <select id="octave-select" value={currentOctave} onChange={handleOctaveChange}>
                     {Octaves.map((octave) => (
@@ -124,10 +177,11 @@ export default function ConfigComponent({
                         </option>
                     ))}
                 </select>
+                <span><small>Range: {currentOctaveObj?.frequencyRange?.min}Hz - {currentOctaveObj?.frequencyRange?.max}Hz</small></span>
             </div>
 
-            <div>
-                <label htmlFor="gridSizeSelect">Grid Size: </label>
+            <div style={{ display: 'flex', flexDirection: 'column' }}>
+                <label htmlFor="gridSizeSelect">Grid Size:</label>
                 <select id="gridSizeSelect" onChange={handleGridSizeChange} defaultValue="16">
                     <option value="16">16 x 16</option>
                     <option value="32">32 x 32</option>
@@ -135,7 +189,7 @@ export default function ConfigComponent({
                 </select>
             </div>
 
-            <div>
+            <div style={{ display: 'flex', flexDirection: 'column' }}>
                 <label htmlFor="note-duration-select">Select Note Duration:</label>
                 <select id="note-duration-select" value={currentNoteDuration} onChange={handleNoteDurationChange}>
                     {NoteDurations.map((noteDuration: NoteDuration, index: number) => (
@@ -146,10 +200,33 @@ export default function ConfigComponent({
                 </select>
             </div>
 
-            <div>
-                <button onClick={handleSave} disabled={!gridData || gridData.size !== (gridWidth * gridHeight)}>
-                    Save ({gridData?.size || 0}/{gridWidth * gridHeight})
-                </button>
+            <div style={{ display: 'flex', flexDirection: 'column' }}>
+                <label htmlFor="velocity-input">Note Velocity:</label>
+                <input 
+                    id="velocity-input" 
+                    type="number" 
+                    min="0" 
+                    max="127" 
+                    value={currentVelocity} 
+                    onChange={handleVelocityChange}
+                    style={{ padding: '4px' }}
+                />
+            </div>
+
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                <div style={{ display: 'flex', gap: '8px' }}>
+                    <button onClick={handleFill}>
+                        Fill
+                    </button>
+                    <button onClick={handleClear}>
+                        Clear
+                    </button>
+                </div>
+                <div>
+                    <button onClick={handleSave} disabled={!gridData || gridData.size !== (gridWidth * gridHeight)}>
+                        Save ({gridData?.size || 0}/{gridWidth * gridHeight})
+                    </button>
+                </div>
             </div>
         </div>
     );

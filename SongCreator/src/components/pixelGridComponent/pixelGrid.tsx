@@ -9,15 +9,24 @@ interface Props {
     currentOctave?: number;
     currentMidiNumber?: number;
     currentNoteDuration?: number;
+    currentVelocity?: number;
     keyPressId?: number;
     onCellSelect?: (cellIndex: number) => void;
-    onGridDataChange?: (gridData: Map<number, { note: string; octave: number; midiNumber: number; duration: number }>) => void;
+    onGridDataChange?: (gridData: Map<number, { note: string; octave: number; midiNumber: number; duration: number; velocity?: number }>) => void;
+    gridData?: Map<number, { note: string; octave: number; midiNumber: number; duration: number; velocity?: number }>;
 };
 
-export default function PixelGrid({ height, width, currentNote, currentOctave, currentMidiNumber, currentNoteDuration, keyPressId, onCellSelect, onGridDataChange }: Props) {
+export default function PixelGrid({ height, width, currentNote, currentOctave, currentMidiNumber, currentNoteDuration, currentVelocity, keyPressId, onCellSelect, onGridDataChange, gridData }: Props) {
     const [clickedCell, setClickedCell] = useState<number>(0);
-    const [cellNotes, setCellNotes] = useState<Map<number, { note: string; octave: number; midiNumber: number; duration: number }>>(new Map());
+    const [cellNotes, setCellNotes] = useState<Map<number, { note: string; octave: number; midiNumber: number; duration: number; velocity?: number }>>(new Map());
     const previousKeyPressIdRef = useRef<number>(-1);
+
+    // Sync internal cell notes when parent provides gridData (e.g. Fill action)
+    useEffect(() => {
+        if (gridData) {
+            setCellNotes(new Map(gridData));
+        }
+    }, [gridData]);
 
     const handleClick = (i: number) => {
         setClickedCell(i);
@@ -28,18 +37,18 @@ export default function PixelGrid({ height, width, currentNote, currentOctave, c
 
     // Update cell note when keyPressId changes (new key is clicked)
     useEffect(() => {
-        if (currentNote && currentOctave !== undefined && currentMidiNumber !== undefined && currentNoteDuration !== undefined && keyPressId !== undefined && keyPressId !== previousKeyPressIdRef.current) {
+        if (currentNote && currentOctave !== undefined && currentMidiNumber !== undefined && currentNoteDuration !== undefined && currentVelocity !== undefined && keyPressId !== undefined && keyPressId !== previousKeyPressIdRef.current) {
             previousKeyPressIdRef.current = keyPressId;
             setCellNotes(prevCellNotes => {
                 const newCellNotes = new Map(prevCellNotes);
-                newCellNotes.set(clickedCell, { note: currentNote, octave: currentOctave, midiNumber: currentMidiNumber, duration: currentNoteDuration });
+                newCellNotes.set(clickedCell, { note: currentNote, octave: currentOctave, midiNumber: currentMidiNumber, duration: currentNoteDuration, velocity: currentVelocity });
                 if (onGridDataChange) {
                     onGridDataChange(newCellNotes);
                 }
                 return newCellNotes;
             });
         }
-    }, [keyPressId, clickedCell, currentNote, currentOctave, currentMidiNumber, currentNoteDuration, onGridDataChange]);
+    }, [keyPressId, clickedCell, currentNote, currentOctave, currentMidiNumber, currentNoteDuration, currentVelocity, onGridDataChange]);
 
     let gridItems: JSX.Element[] = [];
     for (let i = 0; i < height; i++) {
@@ -72,6 +81,9 @@ export default function PixelGrid({ height, width, currentNote, currentOctave, c
                             <div style={{ fontSize: '0.6em', display: 'flex', gap: '4px', justifyContent: 'center' }}>
                                 <span>{cellNote.midiNumber}</span>
                                 <span>{NoteDurations[cellNote.duration]?.short || cellNote.duration}</span>
+                                {cellNote.velocity !== undefined && (
+                                    <span>V{cellNote.velocity}</span>
+                                )}
                             </div>
                         </div>
                     )}

@@ -216,7 +216,6 @@ class Main():
                 self.m.create_midi_multi_track(m.i.track_map, self.tracks)
 
 if __name__ == '__main__':
-
     if len(sys.argv) != 2:
         print('Usage: main.py <config_file.json>')
         sys.exit(1)
@@ -244,5 +243,3 @@ if __name__ == '__main__':
         m.execute(debug=is_debug)
     else:
         print(f'Error: Image {image_file} not found')
-        
-    
