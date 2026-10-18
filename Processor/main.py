@@ -12,7 +12,7 @@ class ImageImport():
 
     def import_image(self):
         self.img = Image.open(self.image_path, 'r').convert('RGB')
-        self.img_map = list(self.img.getdata())
+        self.img_map = list(self.img.get_flattened_data())
 
     def describe(self):
         if self.img is not None:
@@ -24,7 +24,7 @@ class ImageImport():
         if self.img is not None:
             # this might be useful...
             # this gets the image array (no numpy)
-            self.test_array = list(self.img.getdata())
+            self.test_array = list(self.img.get_flattened_data())
 
             # this gets a flat version of the array
             # ex: if I have [(255, 210, 123, 55), (90, 190, 200, 100)] in the array
@@ -136,18 +136,19 @@ class MidiProcessor():
             self.midi_file.writeFile(f)
 
 class Main():
-    def __init__(self) -> None:
-        #self.tracks = tracks
-        self.config = {}
-
-        self.i = None #ImageImport(image_path)
-        self.m = None #MidiProcessor(midi_file_name, len(self.tracks))
+    def __init__(self, config_file) -> None:
+        self.load_config(config_file)
+        self.print_config()
+        
+        # self.i = ImageImport(self.config.get('image'))
+        # self.m = MidiProcessor(self.config.get('outputFilename'), len(self.config.get('tracks')))
+        self.set_up()
 
     def load_config(self, config_file):
         try:
             with open(config_file, 'r') as f:
                 self.config = json.load(f)
-
+                
             if not self.validate_config():
                 raise Exception('Error: Configuration not in the expected format. Please consult documentation')
         except FileNotFoundError:
@@ -163,6 +164,7 @@ class Main():
     def validate_config(self):
         # empty check
         if self.empty_config():
+            print('Error: Config file is empty')
             return False
         
         # set up the expected values
@@ -171,12 +173,14 @@ class Main():
 
         # validate top level properties
         if not all(key in self.config for key in required_keys):
+            print('Error: Missing required keys in config file. Required keys are: ' + ', '.join(required_keys))
             return False
         
         # validate track level properties
         if not (isinstance(self.config['tracks'], list) and
                 all(isinstance(track, dict) and all(track_key in track for track_key in required_track_keys)
                      for track in self.config['tracks'])):
+            print('Error: Each track must be a dictionary with the following keys: ' + ', '.join(required_track_keys))
             return False
 
         return True
@@ -186,60 +190,47 @@ class Main():
         print(self.config)
 
     def empty_config(self):
+        # check if the config is empty or not a dictionary
         return not bool(self.config)
     
     def set_up(self):
         try:
-            if self.empty_config:
-                print('Config file is empty')
-            else:
-                if not os.path.exists(image_file):
-                    raise Exception(f'Error: Image {self.config.get("image")} not found')
-                self.i = ImageImport(self.config.get('image'))
-                self.m = MidiProcessor(self.config.get('song'), len(self.tracks))
+            # if self.empty_config():
+            #     print('Config file is empty')
+            # else:
+            if not os.path.exists(self.config.get('image')):
+                raise Exception(f'Error: Image {self.config.get("image")} not found')
+            self.i = ImageImport(self.config.get('image'))
+            self.m = MidiProcessor(self.config.get('song'), len(self.config.get('tracks')))
         except Exception as ex:
             print(ex)
             sys.exit(1)
 
     def execute(self, debug=False):
-        if self.empty_config:
-            print('Config file is empty')
-        else:
-            self.i.import_image()
+        # if self.empty_config:
+        #     print('Config file is empty')
+        # else:
+        self.i.import_image()
 
-            if debug:
-                m.i.describe()
-                m.i.test_image_array()
-                m.i.split_image_array_test(2)
-            else:
-                m.i.split_image_array(len(self.tracks))
-                self.m.create_midi_multi_track(m.i.track_map, self.tracks)
+        if debug:
+            m.i.describe()
+            m.i.test_image_array()
+            m.i.split_image_array_test(2)
+        else:
+            m.i.split_image_array(len(self.config.get('tracks')))
+            self.m.create_midi_multi_track(m.i.track_map, self.config.get('tracks'))
 
 if __name__ == '__main__':
-    if len(sys.argv) != 2:
-        print('Usage: main.py <config_file.json>')
+    if len(sys.argv) < 2 or len(sys.argv) > 3:
+        print('Usage: main.py <config_file.json> [debug|Optional (values: t or f - defaults to f)]')
         sys.exit(1)
 
-    # load the config
-    
-
-    tracks = [
-        { 'name': 'Track 1', 'program': 1},
-        { 'name': 'Track 2', 'program': 19},
-        { 'name': 'Track 3', 'program': 49},
-        { 'name': 'Track 4', 'program': 47},
-    ]
-
-    midi_file = sys.argv[1]
-    image_file = sys.argv[2]
+    config_file = sys.argv[1]
     is_debug = False
 
-    if len(sys.argv) == 4:
-        is_debug = True if sys.argv[3].lower() == 't' else  False
+    if len(sys.argv) == 3:
+        is_debug = True if sys.argv[2].lower() == 't' else  False
 
-    if os.path.exists(image_file):
-        print(f'Creating MIDI file {midi_file} from {image_file} (Debug: {is_debug})')
-        m = Main(midi_file, image_file, tracks)
-        m.execute(debug=is_debug)
-    else:
-        print(f'Error: Image {image_file} not found')
+    print(f'Creating MIDI file (Debug: {is_debug})')
+    m = Main(config_file)
+    m.execute(debug=is_debug)
