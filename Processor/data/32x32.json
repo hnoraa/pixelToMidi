@@ -1,0 +1,24 @@
+{
+    "song": "32s32",
+    "tempo": 120,
+    "outputFilename": ".\\songs\\32x32.midi",
+    "image": ".\\images\\32x32.png",
+    "tracks": [
+        {
+            "name": "track 1",
+            "program": 40
+        },
+        {
+            "name": "track 2",
+            "program": 41
+        },
+        {
+            "name": "track 3",
+            "program": 42
+        },
+        {
+            "name": "track 4",
+            "program": 43
+        }
+    ]
+}

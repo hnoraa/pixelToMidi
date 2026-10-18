@@ -67,14 +67,14 @@ class ImageImport():
                     self.track_map.append(new_list)
 
 class MidiProcessor():
-    def __init__(self, midi_file_name, num_tracks=1) -> None:
+    def __init__(self, midi_file_name, num_tracks=1, tempo=120) -> None:
         self.midi_file_name = midi_file_name
 
         self.track = 0
         self.channel = 0
         self.time = 0                # in beats
         self.duration = 4            # in beats
-        self.tempo = 120             # BPM
+        self.tempo = tempo           # BPM
         self.volume = 100            # 0 - 127 (MIDI standard)
         self.volume_low_lim = 75     # low limit for volume
 
@@ -198,7 +198,7 @@ class Main():
             if not os.path.exists(self.config.get('image')):
                 raise Exception(f'Error: Image {self.config.get("image")} not found')
             self.i = ImageImport(self.config.get('image'))
-            self.m = MidiProcessor(self.config.get('outputFilename'), len(self.config.get('tracks')))
+            self.m = MidiProcessor(self.config.get('outputFilename'), len(self.config.get('tracks')), self.config.get('tempo'))
         except Exception as ex:
             print(ex)
             sys.exit(1)
@@ -210,7 +210,7 @@ class Main():
             self.print_config()
             m.i.describe()
             m.i.test_image_array()
-            m.i.split_image_array_test(2)
+            m.i.split_image_array_test(self.config.get('tracks').__len__())
         else:
             m.i.split_image_array(len(self.config.get('tracks')))
             self.m.create_midi_multi_track(m.i.track_map, self.config.get('tracks'))

@@ -2,7 +2,7 @@
 
 Create a midi file from an array of pixels. 
 
-**NOTE:** Right now, this works best with small **.bmp** or **.png** images. 16 x 16 seems to create a file around 2 minutes in duration.
+**NOTE:** Right now, this works best with small **`.bmp`** or **`.png`** images. 16 x 16 seems to create a file around 2 minutes in duration.
 
 **NOTE:** There seems to be an issue with it only working with 32-bit .bmps
 
@@ -45,7 +45,8 @@ Create a midi file from an array of pixels.
 ```
 
 ## Launch Web UI
-~~~Coming soon~~~
+
+<i>Coming Soon</i>
 
 ## Requirements
 ### Major requirements
@@ -62,15 +63,15 @@ Create a midi file from an array of pixels.
 
 - [ ] Error handling
     - [ ] Check for empty images
-    - [ ] Check for directories and paths
+    - [x] Check for directories and paths
     - [ ] Check that the midi file was created
     - [ ] Determine acceptable file extensions for images
     - [ ] Image resolution warnings
 - [x] Note durations
-- [ ] Tempo
+- [x] Tempo
 - [x] Multiple tracks
 - [ ] Choosing instruments
-- [ ] Song "structure" aka config
+- [x] Song "structure" aka config
 - [ ] User interface
     - [ ] Pixel grid
     - [ ] MIDI Program select
@@ -88,7 +89,9 @@ Open image: `im = Image.open('image.bmp', 'r')`
 
 Getting an array of (RGB|RGBA) tuples (aka the pixels):
 
-`pixel_array = list(im.getdata())`
+<strike>`pixel_array = list(im.getdata())`</strike>
+
+**Note - 10/17/2026** `getdata()` is deprecated, use `get_flattened_data()`
 
 ### MIDIUtil
 #### Overview of `MIDIFile -> __init__()`:
@@ -326,21 +329,24 @@ This can be used to change the "instrument" of the track. Aka the sound
 
 If using quarter note based time parameters, this is the float array starting at longa. This was found on Wikipedia...
 
-|Note Name                     |Duration|Duration as float   |
-|------------------------------|--------|--------------------|
-|Longa                         |4       |4.0                 |
-|Double whole note             |2       |2.0                 |
-|Whole note                    |1       |1.0                 |
-|Half note                     |1/2     |0.5                 |
-|Quarter note                  |1/4     |0.25                |
-|Eight note                    |1/8     |0.125               |
-|Sixteenth note                |1/16    |0.0625              |
-|Thirty-Second note            |1/32    |0.03125             |
-|Sixty-Fourth note             |1/64    |0.015625            |
-|One Hundred Twenty-Eighth note|1/128   |0.0078125           |
+The note duration is derived from the G value in RGB. We get the index of the note duration given the G value mod the length.
+
+The formula to get note duration: `note_durations[G % len(note_durations)]`
+
+|Note Name                     |Duration|Duration as float   |Index|Example G values   |
+|------------------------------|--------|--------------------|-----|-------------------|
+|Longa                         |4       |4.0                 | 0   | 50, 110           |
+|Double whole note             |2       |2.0                 | 1   | 51, 111           |
+|Whole note                    |1       |1.0                 | 2   | 52, 112           |
+|Half note                     |1/2     |0.5                 | 3   | 53, 113           |
+|Quarter note                  |1/4     |0.25                | 4   | 54, 114           |
+|Eight note                    |1/8     |0.125               | 5   | 55, 115           |
+|Sixteenth note                |1/16    |0.0625              | 6   | 56, 116           |
+|Thirty-Second note            |1/32    |0.03125             | 7   | 57, 117           |
+|Sixty-Fourth note             |1/64    |0.015625            | 8   | 58, 118           |
+|One Hundred Twenty-Eighth note|1/128   |0.0078125           | 9   | 59, 119           |
 
 <sub>**Note:** Most of these may not be used but are here anyways</sub>
-
 
 ``` python
 # longa = 4, double whole note = 2, whole note = 1, half = 1/2, 
