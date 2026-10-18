@@ -137,11 +137,10 @@ class MidiProcessor():
 
 class Main():
     def __init__(self, config_file) -> None:
+        # load the config
         self.load_config(config_file)
-        self.print_config()
         
-        # self.i = ImageImport(self.config.get('image'))
-        # self.m = MidiProcessor(self.config.get('outputFilename'), len(self.config.get('tracks')))
+        # set up the image and midi processors
         self.set_up()
 
     def load_config(self, config_file):
@@ -186,6 +185,7 @@ class Main():
         return True
 
     def print_config(self):
+        # debugging function to print the config
         print('Config file')
         print(self.config)
 
@@ -195,24 +195,19 @@ class Main():
     
     def set_up(self):
         try:
-            # if self.empty_config():
-            #     print('Config file is empty')
-            # else:
             if not os.path.exists(self.config.get('image')):
                 raise Exception(f'Error: Image {self.config.get("image")} not found')
             self.i = ImageImport(self.config.get('image'))
-            self.m = MidiProcessor(self.config.get('song'), len(self.config.get('tracks')))
+            self.m = MidiProcessor(self.config.get('outputFilename'), len(self.config.get('tracks')))
         except Exception as ex:
             print(ex)
             sys.exit(1)
 
     def execute(self, debug=False):
-        # if self.empty_config:
-        #     print('Config file is empty')
-        # else:
         self.i.import_image()
 
         if debug:
+            self.print_config()
             m.i.describe()
             m.i.test_image_array()
             m.i.split_image_array_test(2)

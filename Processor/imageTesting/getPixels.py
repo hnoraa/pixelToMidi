@@ -8,7 +8,7 @@ class ImageTest:
 
     def import_image(self):
         self.img = Image.open(self.image_path, 'r').convert('RGB')
-        self.img_map = list(self.img.getdata())
+        self.img_map = list(self.img.get_flattened_data())
 
     def describe(self):
         if self.img is not None:
@@ -20,12 +20,12 @@ class ImageTest:
         if self.img is not None:
             # this might be useful...
             # this gets the image array (no numpy)
-            self.test_array = list(self.img.getdata(band=None))
+            self.test_array = list(self.img.get_flattened_data())
             print(len(self.test_array))
             #for x in self.test_array:
                 #print(x)
 
-            print(self.img.getdata())
+            print(self.img.get_flattened_data())
 
             # this gets a flat version of the array
             # ex: if I have [(255, 210, 123, 55), (90, 190, 200, 100)] in the array
