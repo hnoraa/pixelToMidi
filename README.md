@@ -6,8 +6,11 @@ Create a midi file from an array of pixels.
 
 **NOTE:** There seems to be an issue with it only working with 32-bit .bmps
 
-## Running it
+## Launch Processor (Python scripts)
+### Running it
 `python main.py <config_file.json> <debug: t|f>`
+
+### Launch virtual environment
 
 ### Arguments
 
@@ -40,6 +43,9 @@ Create a midi file from an array of pixels.
     ]
 }
 ```
+
+## Launch Web UI
+~~~Coming soon~~~
 
 ## Requirements
 ### Major requirements
